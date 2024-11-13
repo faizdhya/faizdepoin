@@ -56,7 +56,7 @@ class SiswaController extends Controller
         $image = $request->file('image');
 
         // jika config private true
-        $image->storeAs('public/siswas', $image->hashName());
+        $imagePath = $image->storeAs('siswas', $image->hashName(), 'public');
 
         $id_akun = $this->insertAccount($request->name, $request->email, $request->password);
 
@@ -160,7 +160,7 @@ class SiswaController extends Controller
         if ($request->hasfile('image')) {
             //upload new image
             $image = $request->file('image');
-            $image->storeAs('public/siswas', $image->hashName());
+            $imagePath = $image->storeAs('siswas', $image->hashName(), 'public');
             //delt old image
             Storage::delete('public/siswas/' .$datas->image);
              // update post with new image
