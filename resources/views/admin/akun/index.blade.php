@@ -39,9 +39,25 @@
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
             <td>{{ $user->usertype }}</td>
+
+            @if ($user->usertype == 'admin') :
             <td>
                 <a href="{{ route('akun.edit' , $user->id) }}" class="btn btn-sm btn-primary">Edit</a>
             </td>
+            @else
+            <td>
+                @if($user->usertype == 'siswa')
+                <form onsubmit="return confirm('jika akun siswa dihapus maka data siswa akan ikut terhapus, Apakah anda yakin?');" action="{ route('akun.destroy', $user->id) }" method="POST">
+                    @else
+                    <form onsubmit="return confirm('Apakah anda yakin?');" action="{ route('akun.destroy', $user->id) }" method="POST">
+                        @endif
+                        <a href="{{ route('akun.edit' , $user->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit">Hapus</button>
+                </form>
+            </td>
+            @endif
         </tr>
         @empty
         <tr>

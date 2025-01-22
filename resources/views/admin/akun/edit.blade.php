@@ -37,7 +37,7 @@
     </div>
     @endif
 
-    <form action="{{ route('akun.update , $user->id') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('akun.update' , $akun->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <h2>Data Akun</h2>

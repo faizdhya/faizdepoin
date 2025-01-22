@@ -24,9 +24,10 @@ class LoginRegisterController extends Controller
         return view('admin.akun.create');
     }
 
-    public function edit()
+    public function edit($id)
     {
-        return view('admin.akun.edit');
+        $akun  = User::findOrFail($id);
+        return view('admin.akun.edit', compact('akun'));
     }
 
     public function register()
@@ -40,7 +41,7 @@ class LoginRegisterController extends Controller
             'name' => 'required|string|max:250',
             'email' => 'required|email|max:250|unique:users',
             'password' => 'required|min:8|confirmed',
-            'usertype' => 'required'
+            
         ]);
 
     User::create([
@@ -50,8 +51,17 @@ class LoginRegisterController extends Controller
         'usertype' => 'admin'
     ]);
 
-    return redirect()->route('akun.index')->with(['success' => 'Data Berhasil Disimpan']);
+    $credentials = $request->only('email', 'password');
+    Auth::attempt($credentials);
+    $request->session()->regenerate();
+
+    if ($request->user()->usertype == 'admin') {
+        return redirect('admin/dashboard')->withSuccess('you have success registered * logged in!');
     }
+
+    return redirect()->intended(route('dashboard'));
+    }
+
 
     public function login()
     {
@@ -94,6 +104,17 @@ class LoginRegisterController extends Controller
             'usertype' => 'required'
         ]);
 
+        //get post by id
+        $datas = User::findOrFail($id);
+        //edit akun
+
+        $datas->update([
+            'name' => $request->name,
+            'usertype' => $request->usertype,
+            
+
+        ]);
+        
         //redirect to index
         return redirect()->route('akun.edit' , $id)->with(['success' => 'Data Berhasil Disimpan']);
     }
@@ -112,6 +133,7 @@ class LoginRegisterController extends Controller
         $datas->update([
             'email' => $request->email
 
+
         ]);
         //redirect to index
         return redirect()->route('akun.edit' , $id)->with(['success' => 'Email Berhasil Disimpan']);
@@ -125,7 +147,7 @@ class LoginRegisterController extends Controller
         ]);
 
         //get post by ID
-        $datas = User::finOrFail($id);
+        $datas = User::findOrFail($id);
         //edit akun
 
         $datas->update([
@@ -134,6 +156,43 @@ class LoginRegisterController extends Controller
         //redirect to index
         return redirect()->route('akun.edit' , $id)->with(['success' => 'Password Berhasil Disimpan']);
     }
+
+    //hapus data
+    public function destroy($id): RedirectResponse
+    {
+        //cari id siswa
+        $siswa = DB::table('siswa')->where('id_user' , $id)->value('id');
+
+        //jika siswa
+        if($siswa){
+            //delete siswa
+            $this->destroySiswa($siswa);
+        }
+
+        //get post by id
+        $post = User::findOrFail($id);
+
+        //delete post
+        $post->delete();
+
+        //redirect to index
+        return redirect()->route('akun.index')->with(['success' => 'Akun Berhasil Diubah!']);
+    }
+
+    public function destroySiswa(string $id)
+    {
+        //get id siswa
+        $post = Siswa::findOrFail($id);
+
+        //delete image
+        Storage::delete('public/siswas/' . $post->image);
+
+        //delete post
+        $post->delete();
+    }
+
     
 }
+
+
 
