@@ -50,7 +50,7 @@ class SiswaController extends Controller
             'tingkatan' =>'required',
             'jurusan' =>'required',
             'kelas' =>'required',
-            'hp' =>'required',
+            'hp' =>'required|numeric'
         ]);
         // upload image
         $image = $request->file('image');
