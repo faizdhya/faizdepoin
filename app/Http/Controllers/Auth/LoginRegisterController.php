@@ -43,6 +43,7 @@ class LoginRegisterController extends Controller
             'name' => 'required|string|max:250',
             'email' => 'required|email|max:250|unique:users',
             'password' => 'required|min:8|confirmed',
+            'usertype' =>'required'
             
         ]);
 
@@ -50,18 +51,10 @@ class LoginRegisterController extends Controller
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
-        'usertype' => 'admin'
+        'usertype' => $request->usertype
     ]);
 
-    $credentials = $request->only('email', 'password');
-    Auth::attempt($credentials);
-    $request->session()->regenerate();
-
-    if ($request->user()->usertype == 'admin') {
-        return redirect('admin/dashboard')->withSuccess('you have success registered * logged in!');
-    }
-
-    return redirect()->intended(route('dashboard'));
+    return redirect()->route('akun.index')->with(['success' => 'Data Berhasil Disimpan']);
     }
 
 
@@ -162,34 +155,31 @@ class LoginRegisterController extends Controller
     //hapus data
     public function destroy($id): RedirectResponse
     {
-        //cari id siswa
-        $siswa = DB::table('siswa')->where('id_user' , $id)->value('id');
+        // Cari ID siswa
+        $siswa = DB::table('siswas')->where('id_user', $id)->value('id');
 
-        //jika siswa
-        if($siswa){
-            //delete siswa
+        // Jika siswa ditemukan, hapus data siswa
+        if ($siswa) {
             $this->destroySiswa($siswa);
         }
 
-        //get post by id
+        // Hapus data user berdasarkan ID
         $post = User::findOrFail($id);
-
-        //delete post
         $post->delete();
 
-        //redirect to index
-        return redirect()->route('akun.index')->with(['success' => 'Akun Berhasil Diubah!']);
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('akun.index')->with(['success' => 'Akun Berhasil Dihapus!']);
     }
 
     public function destroySiswa(string $id)
     {
-        //get id siswa
+        // Cari ID siswa
         $post = Siswa::findOrFail($id);
 
-        //delete image
+        // Hapus gambar terkait siswa
         Storage::delete('public/siswas/' . $post->image);
 
-        //delete post
+        // Hapus data siswa
         $post->delete();
     }
 

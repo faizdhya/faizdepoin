@@ -43,7 +43,7 @@
         <select name="usertype" required>
             <option value="">Pilih Hak Akses</option>
             <option value="Admin">Admin</option>
-            <option value="Siswa">Siswa</option>
+            <option value="siswa">Siswa</option>
             <option value="PTK">PTK</option>
         </select>
         <br><br>
