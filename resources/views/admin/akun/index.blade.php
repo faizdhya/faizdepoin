@@ -40,24 +40,19 @@
             <td>{{ $user->email }}</td>
             <td>{{ $user->usertype }}</td>
 
-            @if ($user->usertype == 'admin') 
             <td>
-                <a href="{{ route('akun.edit' , $user->id) }}" class="btn btn-sm btn-primary">Edit</a>
-            </td>
-            @else
-            <td>
+                <a href="{{ route('akun.edit' , $user->id) }}" class="btn btn-sm btn-primary">EDIT</a>
+                
                 @if($user->usertype == 'siswa')
-                <form onsubmit="return confirm('jika akun siswa dihapus maka data siswa akan ikut terhapus, Apakah anda yakin?');" action="{ route('akun.destroy', $user->id) }" method="POST">
-                    @else
-                    <form onsubmit="return confirm('Apakah anda yakin?');" action="{{ route('akun.destroy', $user->id) }}" method="POST">
-                        @endif
-                        <a href="{{ route('akun.edit' , $user->id) }}" class="btn btn-sm btn-primary">Edit</a>
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit">Hapus</button>
+                <form onsubmit="return confirm('Jika Akun Siswa Dihapus Maka Data Siswa Akan Ikut Terhapus, Apakah Anda Yakin?');" action="{{ route('akun.destroy',$user->id) }}" method="POST" style="display:inline;">
+                @else 
+                <form onsubmit="return confirm('Apakah Anda Yakin?');" action="{{ route('akun.destroy',$user->id) }}" method="POST" style="display:inline;">
+                @endif 
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">HAPUS</button>
                 </form>
             </td>
-            @endif
         </tr>
         @empty
         <tr>

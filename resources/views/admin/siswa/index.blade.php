@@ -20,6 +20,7 @@
     </form>
     <br><br>
     
+
     <a href="{{ route('siswa.create') }}">Tambah Siswa</a> 
     @if(Session::has('success'))
     <div class="alert alert-success" role="alert">
