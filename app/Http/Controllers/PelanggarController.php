@@ -116,7 +116,7 @@ class PelanggarController extends Controller
             'status' => 0
         ]);
 
-        $idPelanggar = Pelanggar::where('id_siswa', $request->$id_siswa)->value('id');
+        $idPelanggar = Pelanggar::where('id_siswa', $request->id_siswa)->value('id');
 
         return redirect()->route('pelanggar.show', $idPelanggar);
     }
@@ -171,7 +171,7 @@ class PelanggarController extends Controller
         return redirect()->route("setailPelanggar.show", $request->id_pelanggar)->with(['success' => 'DataBerhasil Disimpan']);
     }
 
-    public function updatePoin(string $id_pelanggaran, string $id_pelanggar)
+    function updatePoin(string $id_pelanggaran, string $id_pelanggar)
     {
         $poin = $this->calculatedPoin($id_pelanggaran, $id_pelanggar);
         $datas = Pelanggar::findorFail($id_pelanggar);
@@ -183,7 +183,7 @@ class PelanggarController extends Controller
         $this->updateStatus($datas, $poin);
     }
 
-    public function calculatedPoin(string  $id_pelanggaran, string $id_pelanggar)
+    function calculatedPoin(string  $id_pelanggaran, string $id_pelanggar)
     {
         $poin_pelanggaran = DB::table('pelanggarans')->where('id', $id_pelanggaran)->value('poin');
         $poin_pelanggar = DB::table('pelanggars')->where('id', $id_pelanggar)->value('poin_pelanggar');
@@ -191,5 +191,110 @@ class PelanggarController extends Controller
 
         return $poin;
     }
+
+    function updateStatus($datas, string $poin)
+    {
+        if ($poin >= 0 && $poin < 15) {
+            $kategoriPelanggar = 0;
+
+            $datas->update([
+                'status_pelanggar' => $kategoriPelanggar,
+                'staus' => 0
+
+            ]);
+        }elseif ($poin >= 15 && $poin < 20) {
+            $kategoriPelanggar = 1;
+
+            if ($kategoriPelanggar > $datas->status_pelanggar && $datas->status = 0){
+                $datas->update([
+                    'status_pelanggar' => $kategoriPelanggar,
+                    'status' => 1
+                ]);
+            }
+        }elseif ($poin >= 20 && $poin < 30) {
+            $kategoriPelanggar = 2;
+
+            if ($kategoriPelanggar > $datas ->status_pelanggar && $datas->status = 2){
+                $datas->update([
+                    'status_pelanggar' => $kategoriPelanggar,
+                    'status' => 2
+                ]);
+            }
+        }elseif ($poin >= 30 && $poin <  40){
+            $kategoriPelanggar = 3;
+
+            if ($kategoriPelanggar > $datas ->status_pelanggar && $datas->status = 2) {
+                $datas->update([
+                    'status_pelanggar' => $kategoriPelanggar,
+                    'status' => 1
+                ]);
+            }
+        }elseif ($poin >= 40 && $poin <  50){
+            $kategoriPelanggar = 4;
+
+            if ($kategoriPelanggar > $datas ->status_pelanggar && $datas->status = 2) {
+                $datas->update([
+                    'status_pelanggar' => $kategoriPelanggar,
+                    'status' => 1
+                ]);
+            }
+        }elseif ($poin >= 50 && $poin <  100){
+            $kategoriPelanggar = 5;
+
+            if ($kategoriPelanggar > $datas ->status_pelanggar && $datas->status = 2) {
+                $datas->update([
+                    'status_pelanggar' => $kategoriPelanggar,
+                    'status' => 1
+                ]);
+            }
+        }elseif ($poin >=  100){
+            $kategoriPelanggar = 6;
+
+            if ($kategoriPelanggar > $datas ->status_pelanggar && $datas->status = 2) {
+                $datas->update([
+                    'status_pelanggar' => $kategoriPelanggar,
+                    'status' => 1
+                ]);
+            }
+        }
+    }
+
+    public function statusTindak($id)
+    {
+        $datas = Pelanggar::findOrFail($id);
+
+        $pelanggar = DB::table('pelanggars')
+        ->join('siswas', 'pelanggars.id_siswa' , '=' , 'siswas>id')
+        ->join('users' , 'siswas>id_user' , '=' , 'users.id')
+        ->selest(
+            'users.name'
+        )
+        ->where('pelanggars>id', $id)
+        ->first();
+
+        $datas->update([
+            'status' => 2
+        ]);
+        return redirect()->route('pelanggar.index')->with(['success' => $pelanggar->name . 'Telah Ditindak!']);
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+        $this->destroyPelanggaran($id);
+
+        $post = Pelanggar::findOrFail($id);
+
+        $post->delete();
+
+        return redirect()->route('pelanggar.index')->with(['success' => 'Data Berhasil Disimpan!']);
+    }
+
+    public function destroyPelanggaran(string $id)
+    {
+        $pelanggaran = DB::table('detail_pelanggarans')->where('id_Pelanggar' , $id);
+
+        $pelanggaran->delete();
+    }
+
 
 }
