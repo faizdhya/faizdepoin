@@ -21,7 +21,7 @@ class PelanggarController extends Controller
         $id_pelanggars = DB::table('pelanggars')->pluck('id_siswa')->toArray();
 
         $pelanggars = DB::table('pelanggars')
-        ->join('siswas', 'pelanggars.id_user','=', 'siswas.id')
+        ->join('siswas', 'pelanggars.id_siswa','=', 'siswas.id')
         ->join('users', 'siswas.id_user', '=', 'users.id')
         ->select(
             'pelanggars.*',
@@ -125,8 +125,8 @@ class PelanggarController extends Controller
     {
         //get data db
         $pelanggar = DB::table('pelanggars')
-        ->join('siswas', 'pelanggars.id_siswa', '=', 'siswa.id')
-        ->joim('users', 'siswas.id_user', '=', 'users.id')
+        ->join('siswas', 'pelanggars.id_siswa', '=', 'siswas.id')
+        ->join('users', 'siswas.id_user', '=', 'users.id')
         ->select(
             'pelanggars.*',
             'siswas.image',
@@ -165,10 +165,17 @@ class PelanggarController extends Controller
             'id_pelanggar' =>'required',
             'id_user' =>'required',
             'id_pelanggaran' =>'required'
+        ]);      
+
+        DetailPelanggaran::create([
+            'id_pelanggar' => $request->id_pelanggar,
+            'id_user' => $request->id_user,
+            'id_pelanggaran' => $request->id_pelanggaran,
+            'status' => 0
         ]);
         $this->updatePoin($request->id_pelanggaran, $request->id_pelanggar);
 
-        return redirect()->route("setailPelanggar.show", $request->id_pelanggar)->with(['success' => 'DataBerhasil Disimpan']);
+        return redirect()->route("detailPelanggar.show", $request->id_pelanggar)->with(['success' => 'DataBerhasil Disimpan']);
     }
 
     function updatePoin(string $id_pelanggaran, string $id_pelanggar)
@@ -264,8 +271,8 @@ class PelanggarController extends Controller
         $datas = Pelanggar::findOrFail($id);
 
         $pelanggar = DB::table('pelanggars')
-        ->join('siswas', 'pelanggars.id_siswa' , '=' , 'siswas>id')
-        ->join('users' , 'siswas>id_user' , '=' , 'users.id')
+        ->join('siswas', 'pelanggars.id_siswa' , '=' , 'siswas.id')
+        ->join('users' , 'siswas.id_user' , '=' , 'users.id')
         ->selest(
             'users.name'
         )

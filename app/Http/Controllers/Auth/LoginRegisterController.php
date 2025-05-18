@@ -43,7 +43,7 @@ class LoginRegisterController extends Controller
             'name' => 'required|string|max:250',
             'email' => 'required|email|max:250|unique:users',
             'password' => 'required|min:8|confirmed',
-            'usertype' =>'required'
+            
             
         ]);
 
@@ -51,10 +51,17 @@ class LoginRegisterController extends Controller
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
-        'usertype' => $request->usertype
+        'usertype' => 'admin'
     ]);
 
-    return redirect()->route('akun.index')->with(['success' => 'Data Berhasil Disimpan']);
+    $credentials = $request->only('email', 'password');
+    Auth::attempt($credentials);
+    $request->session()->regenerate();
+
+    if ($request->user()->usertype == 'admin') {
+        return redirect('admin/dashboard')->withSuccess('you have success registered * logged in!');
+        return redirect()->intended(route('dashboard'));
+    }
     }
 
 

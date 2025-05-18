@@ -24,7 +24,7 @@
         }
     </style>
 
-    <h1>Detail Siswa</h1>
+    <h1>Data Pelanggar</h1>
     <a href="{{ route('pelanggar.index') }}">Kembali</a>
 
     <table>
@@ -75,7 +75,7 @@
     </table>
     <br><br>
 
-    <h1>Pelanggaran Yang Dilakukam</h1>
+    <h1>Pelanggaran Yang Dilakukan</h1>
     <br><br>
 
     @if(Session::has('success'))
@@ -85,7 +85,7 @@
     @endif
 
     @if($pelanggar->status == 0 || $pelanggar->status == 1) :
-    <button onclick="mmyFunction()">Tambah Pelanggaran</button>
+    <button onclick="myFunction()">Tambah Pelanggaran</button>
 
     <script>
       function myFunction() {
@@ -95,5 +95,57 @@
     @else
     <a href="{{ route('pelanggar.show' , $pelanggar->id) }}">Tambah Pelanggaran</a>
     @endif
+
+    <table class="tabel">
+        <tr>
+            <th>Nama PTK</th>
+            <th>Tanggal</th>
+            <th>jenis</th>
+            <th>konsekuensi</th>
+            <th>Poin</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+        @forelse ($details as $detail)
+        <tr>
+            <td>{{ $detail->name }}</td>
+            <td>{{ $detail->created_at }}</td>
+            <td>{{ $detail->jenis }}</td>
+            <td>{{ $detail->konsekuensi }}</td>
+            <td>{{ $detail->poin }}</td>
+            @if($detail->status == 0) :
+            <td>
+                <form onsubmit="return confirm('Apakah {{ $pelanggar->name }} Sudah Diberikan Sanksi?');" action="{{ route('detailPelanggar.update' , $detail->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="id_pelanggar" value="{{ $detail->id_pelanggar }}">
+                    <button typr="submit">Belum Diberikan Sanksi</button>
+                </form>
+            </td>
+            @else
+            <td>Sudah Diberikan Sanksi</td>
+            @endif
+            <td>
+            <form onsubmit="return confirm('Apakah Anda Yakin?');" action="{{ route('detailPelanggar.destroy' , $detail->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <input type="hidden" name="id_pelanggar" value="{{ $detail->id_pelanggar }}">
+                    <input type="hidden" name="poin_pelanggaran" value="{{ $detail->poin }}">
+                    <button type="submit">Hapus Pelanggaran</button>
+                </form>
+            </td>
+        </tr>
+        @empty
+        <tr>
+            <td>
+                <p>Data tidak ditemukan, silahkan tambah pelanggaran</p>
+            </td>
+            <td>
+                <a href="{{ route('pelanggar.show', $pelanggar->id) }}">Tambah</a>
+            </td>
+        </tr>
+    @endforelse
+    </table>
+    {{ $details->links() }}
 </body>
 </html>

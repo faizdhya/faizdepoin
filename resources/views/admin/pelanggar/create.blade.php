@@ -34,10 +34,10 @@
       <td>
         <img src="{{ asset('storage/siswas/'.$siswa->image) }}" width="120px" height="120px" alt="">
       </td>
-      <td>{{ $pelanggar->nis }}</td>
-      <td>{{ $pelanggar->name }}</td>
-      <td>{{ $pelanggar->tingkatan }} {{ $pelanggar->jurusan }} {{ $pelanggar->kelas }}</td>
-      <td>{{ $pelanggar->hp }}</td>
+      <td>{{ $siswa->nis }}</td>
+      <td>{{ $siswa->name }}</td>
+      <td>{{ $siswa->tingkatan }} {{ $siswa->jurusan }} {{ $siswa->kelas }}</td>
+      <td>{{ $siswa->hp }}</td>
       <td>
         <form action="{{ route('pelanggar.store') }}" method="POST">
           @csrf

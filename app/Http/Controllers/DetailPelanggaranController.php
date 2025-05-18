@@ -11,30 +11,30 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Redirect;
+//use Illuminate\Support\Facades\Redirect;
 
 class DetailPelanggaranController extends Controller
 {
     public function show(string $id): View
     {
-      $details = DB::table('details_pelanggaran')
+      $details = DB::table('detail_pelanggarans')
       ->join('pelanggars' , 'detail_pelanggarans.id_pelanggar', '=', 'pelanggars.id')
-      ->join('pelanggarans' , 'setail_pelanggarans.id_pelanggaran' , '=' , 'pelanggarans.id')
-      ->join('users' , 'detail_pelanggarans.id_users' , '=' , 'users.id')
+      ->join('pelanggarans' , 'detail_pelanggarans.id_pelanggaran' , '=' , 'pelanggarans.id')
+      ->join('users' , 'detail_pelanggarans.id_user' , '=' , 'users.id')
       ->select(
-        'deail_pelanggarans.*',
+        'detail_pelanggarans.*',
         'pelanggars.id_siswa',
         'pelanggars.poin_pelanggar',
-        'pelanggars.jenis',
-        'pelanggars.konsekuensi',
-        'pelanggars.poin',
+        'pelanggarans.jenis',
+        'pelanggarans.konsekuensi',
+        'pelanggarans.poin',
         'users.name'
       )->where('detail_pelanggarans.id_pelanggar' , $id)
       ->latest()
       ->paginate(10);
 
       $pelanggar = DB::table('pelanggars')
-      ->join('siswas' , 'pelanggars.id_user' , '=' , 'siswas.id')
+      ->join('siswas' , 'pelanggars.id_siswa' , '=' , 'siswas.id')
       ->join('users' , 'siswas.id_user' , '=' , 'users.id')
       ->select(
         'pelanggars.*',
@@ -44,15 +44,15 @@ class DetailPelanggaranController extends Controller
         'siswas.jurusan',
         'siswas.kelas',
         'siswas.hp',
-        'siswas.name',
-        'siswas.email',
+        'users.name',
+        'users.email'
       )
       ->where('pelanggars.id' , $id)
       ->first();
       return view('admin.detail.show' , compact('details' , 'pelanggar'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id)
     {
       $datas = DetailPelanggaran::findOrFail($id);
 
@@ -66,7 +66,7 @@ class DetailPelanggaranController extends Controller
     {
       $this->deletePoin($request->id_pelanggar, $request->id_pelanggaran);
 
-      $post = Pelanggaran::findOrFail($id);
+      $post = DetailPelanggaran::findOrFail($id);
 
       $post->delete();
 

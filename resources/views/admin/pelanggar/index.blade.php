@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Data User</h1>
+    <h1>Data Pelanggar</h1>
     <a href="{{ route('admin/dashboard') }}">Menu Utama</a>
     <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
     <form id="logout-form" action="{{ route('logout') }}" method="POST">

@@ -96,6 +96,7 @@
             <input type="hidden" name="id_pelanggar" value="{{ $pelanggar->id }}">
             <input type="hidden" name="id_user" value="{{ $idUser }}">
             <input type="hidden" name="id_pelanggaran" value="{{ $pelanggaran->id }}">
+            <button type="submit">Tambah Pelanggaran</button>
           </form>
         </td>
       </tr>
