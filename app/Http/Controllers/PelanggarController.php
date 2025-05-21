@@ -45,7 +45,7 @@ class PelanggarController extends Controller
     public function searchPelanggar(string $cari, $id)
     {
         $pelanggars = DB::table('pelanggars')
-        ->join('siswas', 'pelanggars.id_user','=', 'siswas.id')
+        ->join('siswas', 'pelanggars.id_siswa','=', 'siswas.id')
         ->join('users', 'siswas.id_user', '=', 'users.id')
         ->select(
             'pelanggars.*',
@@ -273,16 +273,16 @@ class PelanggarController extends Controller
         $pelanggar = DB::table('pelanggars')
         ->join('siswas', 'pelanggars.id_siswa' , '=' , 'siswas.id')
         ->join('users' , 'siswas.id_user' , '=' , 'users.id')
-        ->selest(
+        ->select(
             'users.name'
         )
-        ->where('pelanggars>id', $id)
+        ->where('pelanggars.id', $id)
         ->first();
 
         $datas->update([
             'status' => 2
         ]);
-        return redirect()->route('pelanggar.index')->with(['success' => $pelanggar->name . 'Telah Ditindak!']);
+        return redirect()->route('pelanggar.index', )->with(['success' => $pelanggar->name . 'Telah Ditindak!']);
     }
 
     public function destroy($id): RedirectResponse

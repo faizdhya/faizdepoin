@@ -59,7 +59,7 @@ class DetailPelanggaranController extends Controller
       $datas->update([
         'status' => 1
       ]);
-      return redirect('detailPelanggar.show' , $request->id_pelanggar)->with(['success' => 'Siswa Telah Diberikan!']);
+      return redirect()->route('detailPelanggar.show' , $request->id_pelanggar)->with(['success' => 'Siswa Telah Diberikan!']);
     }
 
     public function destroy(Request $request, $id): RedirectResponse

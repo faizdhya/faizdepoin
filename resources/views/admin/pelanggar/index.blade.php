@@ -53,9 +53,9 @@
             @elseif ($pelanggar->status == 1)
 
             <td>
-              <form onsubmit="return confirm('Apakah Anda Yakin {{ $pelanggar->name }} Sudah Ditindak?');" action="{{ route('pelanggar.statusTindak') }}"  method="POST">
+              <form onsubmit="return confirm('Apakah Anda Yakin {{ $pelanggar->name }} Sudah Ditindak?');" action="{{ route('pelanggar.statusTindak', $pelanggar->id) }}"  method="POST">
                 @csrf
-                @method('put')
+                @method('PUT')
                 <button type="submit">Perlu Ditindak</button>
               </form>
             </td>
@@ -65,7 +65,7 @@
             @endif
             <td> 
                 <form onsubmit="return confirm('Apakah Anda Yakin?');" action="{{ route('pelanggar.destroy',$pelanggar->id) }}" method="POST">
-                  <a href="{{ route('detailPelanggar.show' , $pelanggar->id) }}" class="btn btn-sm btn-dark">Detail</a>
+                  <a href="{{ route('detailPelanggar.show', $pelanggar->id) }}" class="btn btn-sm btn-dark">Detail</a>
                     @csrf
                     @method('DELETE')
                     <button type="submit">HAPUS</button>
